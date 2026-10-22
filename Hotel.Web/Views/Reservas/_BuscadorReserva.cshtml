@@ -1,0 +1,62 @@
+@{
+    // Banner + buscador de disponibilidad (usado en Reservas/Index y Reservas/Disponibles)
+    var hoy = DateTime.Today.ToString("yyyy-MM-dd");
+    var ingreso = (DateOnly)ViewBag.BuscadorIngreso;
+    var salida = (DateOnly)ViewBag.BuscadorSalida;
+    var accion = ViewData["BuscadorAccion"] as string ?? "Disponibles";
+}
+<section class="banner-oscuro">
+    <div class="container">
+        <h1>Encuentra tu habitación ideal</h1>
+        <p>Consulta disponibilidad y reserva tu estancia en pocos pasos.</p>
+    </div>
+</section>
+
+<div class="container">
+    <form asp-controller="Reservas" asp-action="@accion" method="get" class="buscador-card" id="buscadorReserva">
+        <div class="row g-3">
+            <div class="col-sm-6 col-lg-3">
+                <label for="b-ingreso" class="form-label">Fecha de entrada</label>
+                <input type="date" id="b-ingreso" name="ingreso" class="form-control rounded-pill" required
+                       min="@hoy" value="@ingreso.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <label for="b-salida" class="form-label">Fecha de salida</label>
+                <input type="date" id="b-salida" name="salida" class="form-control rounded-pill" required
+                       min="@hoy" value="@salida.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <label for="b-capacidad" class="form-label">Número de huéspedes</label>
+                <select id="b-capacidad" name="capacidad" class="form-select rounded-pill" asp-items="ViewBag.BuscadorCapacidades">
+                    <option value="">Cualquiera</option>
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <label for="b-tipo" class="form-label">Tipo de habitación</label>
+                <select id="b-tipo" name="idTipo" class="form-select rounded-pill" asp-items="ViewBag.BuscadorTipos">
+                    <option value="">Todos los tipos</option>
+                </select>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-gold rounded-pill px-5 py-2">Buscar disponibilidad</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // La salida debe ser al menos un día después de la entrada
+    (function () {
+        const ing = document.getElementById('b-ingreso');
+        const sal = document.getElementById('b-salida');
+        function ajustar() {
+            if (!ing.value) return;
+            const min = new Date(ing.value);
+            min.setDate(min.getDate() + 1);
+            sal.min = min.toISOString().slice(0, 10);
+            if (!sal.value || sal.value <= ing.value) sal.value = sal.min;
+        }
+        ing.addEventListener('change', ajustar);
+        ajustar();
+    })();
+</script>

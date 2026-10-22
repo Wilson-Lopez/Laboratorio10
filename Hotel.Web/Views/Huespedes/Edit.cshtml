@@ -1,0 +1,21 @@
+@model Hotel.Web.Models.Huesped
+@{
+    ViewData["Title"] = "Editar huésped";
+}
+
+<h1 class="h3">Editar huésped</h1>
+<hr />
+<div class="row">
+    <div class="col-lg-7">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="IdHuesped" />
+            <partial name="_CamposHuesped" model="Model" />
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

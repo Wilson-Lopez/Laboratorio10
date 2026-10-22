@@ -1,0 +1,143 @@
+@model Hotel.Web.Models.Reserva
+@{
+    ViewData["Title"] = "Nueva reserva";
+    ViewData["AnchoCompleto"] = true;
+    var hoy = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<section class="pagina-gris">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h1 class="mb-0">Nueva reserva</h1>
+            <a asp-action="Listado" class="enlace-oro mt-0">
+                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+                Ver reservas registradas
+            </a>
+        </div>
+
+        <div class="aviso-barra mb-4">
+            La reserva se registra con estado <span class="pill-oro">Pendiente</span>.
+            Después podrá confirmarla, finalizarla o cancelarla desde el listado de Reservas.
+        </div>
+
+        <form asp-action="Create" method="post" class="form-card">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row g-4">
+                <!-- Columna izquierda: huésped y habitación -->
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label asp-for="IdHuesped" class="form-label"></label>
+                        <div class="select-con-accion">
+                            <select asp-for="IdHuesped" class="form-select" asp-items="ViewBag.IdHuesped">
+                                <option value="">-- Seleccione --</option>
+                            </select>
+                            <a id="lnkNuevoHuesped" asp-controller="Huespedes" asp-action="Create" asp-route-paraReserva="true"
+                               class="accion-en-select" title="Registrar nuevo huésped" aria-label="Registrar nuevo huésped">
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" y1="8" x2="19" y2="14" /><line x1="22" y1="11" x2="16" y2="11" /></svg>
+                            </a>
+                        </div>
+                        <span asp-validation-for="IdHuesped" class="text-danger small"></span>
+                        <div class="ayuda">
+                            ¿No está en la lista? Regístrelo con
+                            <a asp-controller="Huespedes" asp-action="Create" asp-route-paraReserva="true" class="js-nuevo-huesped">“Nuevo huésped”</a>
+                            y volverá aquí con sus datos.
+                        </div>
+                    </div>
+
+                    <div>
+                        <label asp-for="IdHabitacion" class="form-label"></label>
+                        <select asp-for="IdHabitacion" class="form-select" asp-items="ViewBag.IdHabitacion">
+                            <option value="">-- Seleccione --</option>
+                        </select>
+                        <span asp-validation-for="IdHabitacion" class="text-danger small"></span>
+                        <a asp-action="Disponibles" class="enlace-oro">
+                            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                            Ver habitaciones libres por fechas
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Columna derecha: fechas y resumen -->
+                <div class="col-lg-6">
+                    <div class="form-label">Sección de fechas</div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label asp-for="FechaIngreso" class="form-label sub"></label>
+                            <input asp-for="FechaIngreso" type="date" class="form-control" min="@hoy" />
+                            <span asp-validation-for="FechaIngreso" class="text-danger small"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label asp-for="FechaSalida" class="form-label sub"></label>
+                            <input asp-for="FechaSalida" type="date" class="form-control" min="@hoy" />
+                            <span asp-validation-for="FechaSalida" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div id="resumen" class="resumen-reserva d-none mt-3"></div>
+                </div>
+
+                <!-- Fila completa: observaciones -->
+                <div class="col-12">
+                    <label asp-for="Observaciones" class="form-label"></label>
+                    <textarea asp-for="Observaciones" class="form-control textarea-oro" rows="3" maxlength="200"
+                              placeholder="Ej.: llegada tarde, cuna para bebé, cama adicional..."></textarea>
+                    <span asp-validation-for="Observaciones" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2 mt-4">
+                <button type="submit" class="btn btn-navy-oro">Registrar reserva</button>
+                <a asp-action="Listado" class="btn btn-plata px-4">Volver</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        (function () {
+            const precios = @Json.Serialize((object)ViewBag.Precios);
+            const hab = document.getElementById('IdHabitacion');
+            const ing = document.getElementById('FechaIngreso');
+            const sal = document.getElementById('FechaSalida');
+            const resumen = document.getElementById('resumen');
+            const formato = new Intl.NumberFormat('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            function actualizarResumen() {
+                const precio = precios[hab.value];
+                const noches = (new Date(sal.value) - new Date(ing.value)) / 86400000;
+                if (!precio || !(noches > 0)) { resumen.classList.add('d-none'); return; }
+                resumen.innerHTML = `<span>${noches} noche(s) × S/ ${formato.format(precio)}</span>
+                                     <strong>Total estimado S/ ${formato.format(noches * precio)}</strong>`;
+                resumen.classList.remove('d-none');
+            }
+
+            // La salida mínima es el día siguiente al ingreso
+            function ajustarSalida() {
+                if (!ing.value) return;
+                const minSalida = new Date(ing.value);
+                minSalida.setDate(minSalida.getDate() + 1);
+                sal.min = minSalida.toISOString().slice(0, 10);
+                if (sal.value && sal.value <= ing.value) sal.value = sal.min;
+            }
+
+            // "Nuevo huésped" conserva la habitación y las fechas ya elegidas
+            document.querySelectorAll('#lnkNuevoHuesped, .js-nuevo-huesped').forEach(function (lnk) {
+                lnk.addEventListener('click', function () {
+                    const url = new URL(lnk.href, location.origin);
+                    if (hab.value) url.searchParams.set('idHabitacion', hab.value);
+                    if (ing.value) url.searchParams.set('ingreso', ing.value);
+                    if (sal.value) url.searchParams.set('salida', sal.value);
+                    lnk.href = url.toString();
+                });
+            });
+
+            ing.addEventListener('change', () => { ajustarSalida(); actualizarResumen(); });
+            sal.addEventListener('change', actualizarResumen);
+            hab.addEventListener('change', actualizarResumen);
+            ajustarSalida();
+            actualizarResumen();
+        })();
+    </script>
+}

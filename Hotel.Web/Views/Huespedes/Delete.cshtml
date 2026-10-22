@@ -1,0 +1,30 @@
+@model Hotel.Web.Models.Huesped
+@{
+    ViewData["Title"] = "Eliminar huésped";
+    var bloqueado = ViewBag.TieneReservasVigentes as bool? ?? false;
+}
+
+<h1 class="h3">Eliminar huésped</h1>
+@if (bloqueado)
+{
+    <div class="alert alert-warning">
+        No se puede eliminar: este huésped tiene reservas <strong>pendientes o confirmadas</strong>.
+        Cancélelas primero desde <a asp-action="Details" asp-route-id="@Model.IdHuesped">su detalle</a>.
+    </div>
+}
+else
+{
+    <p class="text-danger">¿Seguro que desea eliminar este huésped? Dejará de aparecer en los listados, pero su historial de reservas se conserva.</p>
+}
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Nombre</dt>
+    <dd class="col-sm-9">@Model.NombreCompleto</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Documento)</dt>
+    <dd class="col-sm-9">@Model.Documento</dd>
+</dl>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="IdHuesped" />
+    <button type="submit" class="btn btn-danger" disabled="@bloqueado">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>

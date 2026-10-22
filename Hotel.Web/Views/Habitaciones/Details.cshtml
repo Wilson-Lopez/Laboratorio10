@@ -1,0 +1,55 @@
+@model Hotel.Web.Models.Habitacion
+@{
+    ViewData["Title"] = "Detalle de habitación";
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="h3 mb-0">Habitación @Model.Numero</h1>
+    <div>
+        <a asp-controller="Reservas" asp-action="Create" asp-route-idHabitacion="@Model.IdHabitacion" class="btn btn-primary">Reservar</a>
+        <a asp-action="Edit" asp-route-id="@Model.IdHabitacion" class="btn btn-warning">Editar</a>
+    </div>
+</div>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Piso</dt>
+    <dd class="col-sm-9">@Model.Piso</dd>
+    <dt class="col-sm-3">Tipo</dt>
+    <dd class="col-sm-9">@Model.IdTipoNavigation.Nombre</dd>
+    <dt class="col-sm-3">Precio por noche</dt>
+    <dd class="col-sm-9">S/ @Model.IdTipoNavigation.PrecioNoche.ToString("N2")</dd>
+    <dt class="col-sm-3">Capacidad</dt>
+    <dd class="col-sm-9">@Model.IdTipoNavigation.Capacidad persona(s)</dd>
+</dl>
+
+<h2 class="h5 mt-4">Reservas vigentes</h2>
+<table class="table table-sm table-striped align-middle">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Huésped</th>
+            <th>Ingreso</th>
+            <th>Salida</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model.Reservas)
+        {
+            <tr>
+                <td>@r.IdReserva</td>
+                <td>@r.IdHuespedNavigation.NombreCompleto</td>
+                <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                <td><partial name="_EstadoBadge" model="r.Estado" /></td>
+                <td class="text-end"><a asp-controller="Reservas" asp-action="Details" asp-route-id="@r.IdReserva" class="btn btn-sm btn-outline-secondary">Ver</a></td>
+            </tr>
+        }
+        @if (!Model.Reservas.Any())
+        {
+            <tr><td colspan="6" class="text-center text-muted">Sin reservas pendientes ni confirmadas.</td></tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

@@ -1,0 +1,42 @@
+@model Hotel.Web.Models.Huesped
+@{
+    ViewData["Title"] = "Nuevo huésped";
+    var paraReserva = ViewBag.ParaReserva as bool? ?? false;
+    var ingreso = ViewBag.Ingreso as DateOnly?;
+    var salida = ViewBag.Salida as DateOnly?;
+}
+
+<h1 class="h3">Nuevo huésped</h1>
+@if (paraReserva)
+{
+    <div class="alert alert-info py-2">Al guardar, volverá al formulario de reserva con este huésped seleccionado.</div>
+}
+<hr />
+<div class="row">
+    <div class="col-lg-7">
+        <form asp-action="Create" method="post">
+            <input type="hidden" name="paraReserva" value="@paraReserva.ToString().ToLower()" />
+            <input type="hidden" name="idHabitacion" value="@ViewBag.IdHabitacion" />
+            <input type="hidden" name="ingreso" value="@ingreso?.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="salida" value="@salida?.ToString("yyyy-MM-dd")" />
+
+            <partial name="_CamposHuesped" model="Model" />
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            @if (paraReserva)
+            {
+                <a asp-controller="Reservas" asp-action="Create" asp-route-idHabitacion="@ViewBag.IdHabitacion"
+                   asp-route-ingreso="@ingreso?.ToString("yyyy-MM-dd")" asp-route-salida="@salida?.ToString("yyyy-MM-dd")"
+                   class="btn btn-secondary">Volver a la reserva</a>
+            }
+            else
+            {
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            }
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

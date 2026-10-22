@@ -1,0 +1,19 @@
+@model IEnumerable<Hotel.Web.Models.Habitacion>
+@{
+    ViewData["Title"] = "Disponibilidad";
+    ViewData["AnchoCompleto"] = true;
+    ViewData["BuscadorAccion"] = "Disponibles";
+}
+
+<partial name="_BuscadorReserva" />
+
+<section class="container py-4">
+    @if (ViewBag.Noches == null && ViewBag.Error == null)
+    {
+        <p class="text-center text-muted py-4">Elige tus fechas y pulsa <strong>Buscar disponibilidad</strong> para ver las habitaciones libres.</p>
+    }
+    else
+    {
+        <partial name="_ResultadosDisponibilidad" model="Model.ToList()" />
+    }
+</section>

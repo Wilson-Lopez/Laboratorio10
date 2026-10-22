@@ -1,0 +1,94 @@
+@model IEnumerable<Hotel.Web.Models.Huesped>
+@{
+    ViewData["Title"] = "Huéspedes";
+    ViewData["AnchoCompleto"] = true;
+    ViewData["NavClaro"] = true;
+    var buscar = ViewBag.Buscar as string;
+
+    static string Iniciales(Hotel.Web.Models.Huesped h) =>
+        $"{h.Nombres.Trim().FirstOrDefault()}{h.Apellidos.Trim().FirstOrDefault()}".ToUpperInvariant();
+}
+
+<section class="huespedes-pagina">
+    <div class="container-xxl px-3 px-md-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <h1 class="mb-0">Huéspedes</h1>
+            <div class="d-flex align-items-center gap-2 acciones-cabecera">
+                <form asp-action="Index" method="get" class="buscador-huesped" role="search">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                    <input type="search" name="buscar" value="@buscar" class="form-control"
+                           placeholder="Buscar por nombre, apellido o documento" aria-label="Buscar huésped" />
+                </form>
+                <a asp-action="Create" class="btn btn-plata">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                    Nuevo huésped
+                </a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(buscar))
+        {
+            <p class="text-muted mb-4">
+                @Model.Count() @(Model.Count() == 1 ? "resultado" : "resultados") para “<strong class="text-body">@buscar</strong>” ·
+                <a asp-action="Index">Ver todos</a>
+            </p>
+        }
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+            @foreach (var h in Model)
+            {
+                <div class="col">
+                    <article class="huesped-card">
+                        <div class="avatar" aria-hidden="true">@Iniciales(h)</div>
+                        <h2 class="nombre">@h.Nombres @h.Apellidos</h2>
+
+                        <dl class="datos">
+                            <dt>
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+                                Documento
+                            </dt>
+                            <dd>@h.Documento</dd>
+                            <dt>
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
+                                Correo
+                            </dt>
+                            <dd title="@h.Email">@(h.Email ?? "—")</dd>
+                            <dt>
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+                                Teléfono
+                            </dt>
+                            <dd>@(h.Telefono ?? "—")</dd>
+                        </dl>
+
+                        <div class="acciones">
+                            <a asp-controller="Reservas" asp-action="Create" asp-route-idHuesped="@h.IdHuesped" class="accion accion-oro">
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                                Reservar
+                            </a>
+                            <a asp-action="Details" asp-route-id="@h.IdHuesped" class="accion">
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+                                Detalle
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@h.IdHuesped" class="accion">
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>
+                                Editar
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@h.IdHuesped" class="accion">
+                                <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+                                Eliminar
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <p class="text-muted mb-3">No se encontraron huéspedes.</p>
+                <a asp-action="Create" class="btn btn-gold rounded-pill px-4">Registrar huésped</a>
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,38 @@
+@model Hotel.Web.Models.Habitacion
+@{
+    ViewData["Title"] = "Editar habitación";
+}
+
+<h1 class="h3">Editar habitación</h1>
+<hr />
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdHabitacion" />
+            <div class="mb-3">
+                <label asp-for="Numero" class="form-label">Número</label>
+                <input asp-for="Numero" class="form-control" />
+                <span asp-validation-for="Numero" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Piso" class="form-label">Piso</label>
+                <input asp-for="Piso" class="form-control" min="1" />
+                <span asp-validation-for="Piso" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="IdTipo" class="form-label">Tipo de habitación</label>
+                <select asp-for="IdTipo" class="form-select" asp-items="ViewBag.IdTipo">
+                    <option value="">-- Seleccione --</option>
+                </select>
+                <span asp-validation-for="IdTipo" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

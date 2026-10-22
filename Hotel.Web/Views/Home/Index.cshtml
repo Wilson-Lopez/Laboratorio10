@@ -1,0 +1,214 @@
+﻿@model IEnumerable<Hotel.Web.Models.TipoHabitacion>
+@{
+    ViewData["Title"] = "Inicio";
+    ViewData["AnchoCompleto"] = true;
+    ViewData["NavClaro"] = true;
+    var hoy = DateTime.Today;
+
+}
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="hero-eyebrow">Bienvenido a Hotel</span>
+                <h1 class="mb-3">Una estancia que recordarás</h1>
+                <p class="lead mb-4">Encuentra el espacio perfecto para descansar y disfrutar. Reserva en minutos y con la mejor tarifa.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="#habitaciones" class="btn btn-gold btn-lg rounded-pill px-4">Ver habitaciones</a>
+                    <a asp-controller="Reservas" asp-action="Disponibles" class="btn btn-light-pill btn-lg rounded-pill px-4">Consultar disponibilidad</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <form asp-controller="Reservas" asp-action="Disponibles" method="get" class="buscador" id="buscador">
+                    <h2 class="h5 mb-3">Busca tu habitación</h2>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="ingreso" class="form-label">Llegada</label>
+                            <input type="date" id="ingreso" name="ingreso" class="form-control" required
+                                   min="@hoy.ToString("yyyy-MM-dd")" value="@hoy.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-6">
+                            <label for="salida" class="form-label">Salida</label>
+                            <input type="date" id="salida" name="salida" class="form-control" required
+                                   min="@hoy.AddDays(1).ToString("yyyy-MM-dd")" value="@hoy.AddDays(1).ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100 py-2">Ver disponibilidad</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Acerca del sistema -->
+<section class="seccion pb-0" id="acerca">
+    <div class="container">
+        <div class="seccion-titulo">
+            <h2>Acerca del sistema</h2>
+            <p class="mx-auto" style="max-width: 46rem;">
+                Hotel.Web es una aplicación web desarrollada en ASP.NET Core MVC con Entity Framework Core y SQL Server
+                para gestionar las habitaciones, los huéspedes y las reservas de un hotel de forma rápida y ordenada.
+            </p>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+            <div class="col">
+                <a asp-controller="Habitaciones" asp-action="Index" class="beneficio d-block text-decoration-none text-reset">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                    <h3>Habitaciones</h3>
+                    <p>Registra, edita y filtra habitaciones por tipo. La eliminación es lógica: nunca se borra un registro.</p>
+                </a>
+            </div>
+            <div class="col">
+                <a asp-controller="Reservas" asp-action="Disponibles" class="beneficio d-block text-decoration-none text-reset">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                    <h3>Disponibilidad</h3>
+                    <p>Consulta las habitaciones libres entre dos fechas, con el número de noches y el total estimado.</p>
+                </a>
+            </div>
+            <div class="col">
+                <a asp-controller="Reservas" asp-action="Index" class="beneficio d-block text-decoration-none text-reset">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><polyline points="9 16 11 18 15 14" /></svg>
+                    <h3>Reservas</h3>
+                    <p>Valida fechas y cruces antes de guardar. Estados: Pendiente, Confirmada, Finalizada y Cancelada.</p>
+                </a>
+            </div>
+            <div class="col">
+                <a asp-controller="Huespedes" asp-action="Index" class="beneficio d-block text-decoration-none text-reset">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    <h3>Huéspedes</h3>
+                    <p>Administra los datos de cada huésped y consulta su historial de reservas.</p>
+                </a>
+            </div>
+        </div>
+        <p class="text-center text-muted small mt-4 mb-0">
+            Tecnologías: ASP.NET Core MVC · Entity Framework Core (Database First) · SQL Server · Patrón Repositorio · Bootstrap
+        </p>
+    </div>
+</section>
+
+<!-- Habitaciones destacadas -->
+<section class="seccion" id="habitaciones">
+    <div class="container">
+        <div class="seccion-titulo">
+            <h2>Habitaciones destacadas</h2>
+            <p>Elige el estilo de habitación que mejor se adapta a tu viaje.</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+            @foreach (var tipo in Model)
+            {
+                var p = PresentacionTipo.Para(tipo.Nombre);
+                var cantidad = tipo.Habitacions.Count;
+                <div class="col">
+                    <article class="card room-card">
+                        <div class="room-img">
+                            <img src="~/img/@p.Imagen" alt="Habitación @tipo.Nombre" loading="lazy" />
+                            <span class="room-tag">@cantidad @(cantidad == 1 ? "habitación" : "habitaciones")</span>
+                        </div>
+                        <div class="card-body d-flex flex-column p-4">
+                            <div class="d-flex justify-content-between align-items-baseline gap-2 mb-2">
+                                <h3>@tipo.Nombre</h3>
+                                <div class="room-precio">S/ @tipo.PrecioNoche.ToString("N0")<small> /noche</small></div>
+                            </div>
+                            <p class="text-muted small mb-3">@p.Descripcion</p>
+                            <div class="room-amenidades mb-4">
+                                <span>
+                                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                                    @tipo.Capacidad @(tipo.Capacidad == 1 ? "huésped" : "huéspedes")
+                                </span>
+                                <span>
+                                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" /></svg>
+                                    WiFi
+                                </span>
+                                @foreach (var extra in p.Extras)
+                                {
+                                    <span>
+                                        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                                        @extra
+                                    </span>
+                                }
+                            </div>
+                            <a asp-controller="Habitaciones" asp-action="Index" asp-route-idTipo="@tipo.IdTipo"
+                               class="btn btn-gold rounded-pill mt-auto">Ver habitaciones</a>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="text-center text-muted">Pronto tendremos habitaciones disponibles.</p>
+        }
+    </div>
+</section>
+
+<!-- Beneficios -->
+<section class="seccion seccion-crema">
+    <div class="container">
+        <div class="seccion-titulo">
+            <h2>Beneficios</h2>
+            <p>Todo lo que necesitas para una estadía sin preocupaciones.</p>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+            <div class="col">
+                <div class="beneficio">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0" /><line x1="12" y1="20" x2="12.01" y2="20" /></svg>
+                    <h3>WiFi gratuito</h3>
+                    <p>Conexión de alta velocidad en habitaciones y áreas comunes.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="beneficio">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                    <h3>Atención 24/7</h3>
+                    <p>Recepción disponible a cualquier hora para ayudarte.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="beneficio">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20" /><path d="M6 8v4h6V8" /></svg>
+                    <h3>Habitaciones confortables</h3>
+                    <p>Camas premium, ropa de cama de calidad y ambientes silenciosos.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="beneficio">
+                    <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><polyline points="9 16 11 18 15 14" /></svg>
+                    <h3>Reserva rápida</h3>
+                    <p>Consulta disponibilidad y reserva en pocos pasos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Llamado a la acción -->
+<section class="cta">
+    <div class="container">
+        <h2 class="mb-3">¿Listo para tu próxima estancia?</h2>
+        <p class="mb-4">Revisa qué habitaciones están libres en tus fechas y asegura tu reserva hoy.</p>
+        <a asp-controller="Reservas" asp-action="Disponibles" class="btn btn-gold btn-lg rounded-pill px-5">Consultar disponibilidad</a>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // La salida debe ser al menos un día después de la llegada
+        (function () {
+            const ing = document.getElementById('ingreso');
+            const sal = document.getElementById('salida');
+            ing.addEventListener('change', function () {
+                if (!ing.value) return;
+                const min = new Date(ing.value);
+                min.setDate(min.getDate() + 1);
+                sal.min = min.toISOString().slice(0, 10);
+                if (!sal.value || sal.value <= ing.value) sal.value = sal.min;
+            });
+        })();
+    </script>
+}

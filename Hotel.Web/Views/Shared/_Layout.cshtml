@@ -1,0 +1,109 @@
+﻿@{
+    var controlador = ViewContext.RouteData.Values["controller"]?.ToString();
+    var accion = ViewContext.RouteData.Values["action"]?.ToString();
+    var anchoCompleto = ViewData["AnchoCompleto"] as bool? ?? false;
+    var navClaro = ViewData["NavClaro"] as bool? ?? false;
+    string Activo(bool condicion) => condicion ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hotel</title>
+    <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Hotel.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-hotel @(navClaro ? "" : "navbar-oscuro")" data-bs-theme="@(navClaro ? "light" : "dark")">
+            <div class="container">
+                <a class="navbar-brand brand-hotel" asp-controller="Home" asp-action="Index">HOTEL</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                        aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="menuPrincipal">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        <li class="nav-item">
+                            <a class="nav-link @Activo(controlador == "Habitaciones")" asp-controller="Habitaciones" asp-action="Index">Habitaciones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Activo(controlador == "Reservas" && accion == "Disponibles")" asp-controller="Reservas" asp-action="Disponibles">Disponibilidad</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Activo(controlador == "Reservas" && accion != "Disponibles")" asp-controller="Reservas" asp-action="Index">Reservas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Activo(controlador == "Huespedes")" asp-controller="Huespedes" asp-action="Index">Huéspedes</a>
+                        </li>
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                            <a class="btn btn-gold rounded-pill px-4" asp-controller="Reservas" asp-action="Create">Reservar ahora</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="flex-grow-1 @(anchoCompleto ? "" : "container py-4")">
+        @if (TempData["Mensaje"] is string mensaje)
+        {
+            <div class="@(anchoCompleto ? "container pt-3" : "")">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @mensaje
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        }
+        @if (TempData["Error"] is string error)
+        {
+            <div class="@(anchoCompleto ? "container pt-3" : "")">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @error
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="footer-hotel">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-5">
+                    <div class="brand-hotel text-white mb-2">HOTEL</div>
+                    <p class="mb-0">Descanso, comodidad y atención personalizada en cada estadía.</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="text-white">Explorar</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li><a asp-controller="Habitaciones" asp-action="Index">Habitaciones</a></li>
+                        <li><a asp-controller="Reservas" asp-action="Disponibles">Disponibilidad</a></li>
+                        <li><a asp-controller="Reservas" asp-action="Create">Reservar</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-4">
+                    <h6 class="text-white">Contacto</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li>Recepción 24/7</li>
+                        <li>reservas@hotel.pe</li>
+                        <li>(01) 555-0123</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary my-4" />
+            <div class="small">&copy; @DateTime.Today.Year Hotel. Todos los derechos reservados.</div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

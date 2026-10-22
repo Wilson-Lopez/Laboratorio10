@@ -1,0 +1,31 @@
+@model Hotel.Web.Models.Huesped
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row">
+    <div class="col-sm mb-3">
+        <label asp-for="Nombres" class="form-label"></label>
+        <input asp-for="Nombres" class="form-control" autofocus />
+        <span asp-validation-for="Nombres" class="text-danger"></span>
+    </div>
+    <div class="col-sm mb-3">
+        <label asp-for="Apellidos" class="form-label"></label>
+        <input asp-for="Apellidos" class="form-control" />
+        <span asp-validation-for="Apellidos" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="Documento" class="form-label"></label>
+    <input asp-for="Documento" class="form-control" />
+    <span asp-validation-for="Documento" class="text-danger"></span>
+</div>
+<div class="row">
+    <div class="col-sm mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" type="email" class="form-control" placeholder="opcional" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="col-sm mb-3">
+        <label asp-for="Telefono" class="form-label"></label>
+        <input asp-for="Telefono" type="tel" class="form-control" placeholder="opcional" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+</div>

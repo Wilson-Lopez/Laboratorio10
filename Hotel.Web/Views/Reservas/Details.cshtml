@@ -1,0 +1,49 @@
+@model Hotel.Web.Models.Reserva
+@{
+    ViewData["Title"] = $"Reserva #{Model.IdReserva}";
+    ViewData["VolverADetalle"] = true;
+    var tipo = Model.IdHabitacionNavigation.IdTipoNavigation;
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="h3 mb-0">Reserva #@Model.IdReserva <partial name="_EstadoBadge" model="Model.Estado" /></h1>
+    <div><partial name="_AccionesReserva" model="Model" /></div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="h5">Huésped</h2>
+        <dl class="row">
+            <dt class="col-sm-4">Nombre</dt>
+            <dd class="col-sm-8">
+                <a asp-controller="Huespedes" asp-action="Details" asp-route-id="@Model.IdHuesped">@Model.IdHuespedNavigation.NombreCompleto</a>
+            </dd>
+            <dt class="col-sm-4">Documento</dt>
+            <dd class="col-sm-8">@Model.IdHuespedNavigation.Documento</dd>
+            <dt class="col-sm-4">Contacto</dt>
+            <dd class="col-sm-8">@(Model.IdHuespedNavigation.Email ?? "—") / @(Model.IdHuespedNavigation.Telefono ?? "—")</dd>
+        </dl>
+    </div>
+    <div class="col-md-6">
+        <h2 class="h5">Estadía</h2>
+        <dl class="row">
+            <dt class="col-sm-4">Habitación</dt>
+            <dd class="col-sm-8">@Model.IdHabitacionNavigation.Numero — @tipo.Nombre (piso @Model.IdHabitacionNavigation.Piso)</dd>
+            <dt class="col-sm-4">Ingreso</dt>
+            <dd class="col-sm-8">@Model.FechaIngreso.ToString("dddd dd/MM/yyyy")</dd>
+            <dt class="col-sm-4">Salida</dt>
+            <dd class="col-sm-8">@Model.FechaSalida.ToString("dddd dd/MM/yyyy")</dd>
+            <dt class="col-sm-4">Noches</dt>
+            <dd class="col-sm-8">@Model.Noches × S/ @tipo.PrecioNoche.ToString("N2")</dd>
+            <dt class="col-sm-4">Total</dt>
+            <dd class="col-sm-8 fw-bold">S/ @((Model.Noches * tipo.PrecioNoche).ToString("N2"))</dd>
+        </dl>
+    </div>
+</div>
+<dl class="row">
+    <dt class="col-sm-2">@Html.DisplayNameFor(m => m.Observaciones)</dt>
+    <dd class="col-sm-10">@(Model.Observaciones ?? "—")</dd>
+    <dt class="col-sm-2">@Html.DisplayNameFor(m => m.FechaRegistro)</dt>
+    <dd class="col-sm-10">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
+</dl>
+<a asp-action="Listado" class="btn btn-secondary">Volver al listado</a>

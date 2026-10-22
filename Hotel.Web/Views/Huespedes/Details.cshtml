@@ -1,0 +1,55 @@
+@model Hotel.Web.Models.Huesped
+@{
+    ViewData["Title"] = "Detalle de huésped";
+}
+
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="h3 mb-0">@Model.NombreCompleto</h1>
+    <div>
+        <a asp-controller="Reservas" asp-action="Create" asp-route-idHuesped="@Model.IdHuesped" class="btn btn-primary">Nueva reserva</a>
+        <a asp-action="Edit" asp-route-id="@Model.IdHuesped" class="btn btn-warning">Editar</a>
+    </div>
+</div>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Documento)</dt>
+    <dd class="col-sm-9">@Model.Documento</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Email)</dt>
+    <dd class="col-sm-9">@(Model.Email ?? "—")</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Telefono)</dt>
+    <dd class="col-sm-9">@(Model.Telefono ?? "—")</dd>
+</dl>
+
+<h2 class="h5 mt-4">Historial de reservas</h2>
+<table class="table table-sm table-striped align-middle">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Habitación</th>
+            <th>Ingreso</th>
+            <th>Salida</th>
+            <th>Estado</th>
+            <th class="text-end">Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model.Reservas)
+        {
+            <tr>
+                <td>@r.IdReserva</td>
+                <td>@r.IdHabitacionNavigation.Numero (@r.IdHabitacionNavigation.IdTipoNavigation.Nombre)</td>
+                <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                <td><partial name="_EstadoBadge" model="r.Estado" /></td>
+                <td class="text-end">S/ @((r.Noches * r.IdHabitacionNavigation.IdTipoNavigation.PrecioNoche).ToString("N2"))</td>
+                <td class="text-end"><a asp-controller="Reservas" asp-action="Details" asp-route-id="@r.IdReserva" class="btn btn-sm btn-outline-secondary">Ver</a></td>
+            </tr>
+        }
+        @if (!Model.Reservas.Any())
+        {
+            <tr><td colspan="7" class="text-center text-muted">Este huésped aún no tiene reservas.</td></tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Index" class="btn btn-secondary">Volver</a>

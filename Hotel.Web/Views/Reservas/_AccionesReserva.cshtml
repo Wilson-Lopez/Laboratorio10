@@ -1,0 +1,28 @@
+@model Hotel.Web.Models.Reserva
+@{
+    var hoy = DateOnly.FromDateTime(DateTime.Today);
+    var volverADetalle = ViewData["VolverADetalle"] as bool? ?? false;
+}
+@if (EstadoReserva.PuedeConfirmar(Model))
+{
+    <form asp-controller="Reservas" asp-action="Confirmar" asp-route-id="@Model.IdReserva" method="post" class="d-inline">
+        <input type="hidden" name="volverADetalle" value="@volverADetalle.ToString().ToLower()" />
+        <button type="submit" class="btn btn-sm btn-outline-primary" title="Pendiente → Confirmada">Confirmar</button>
+    </form>
+}
+@if (EstadoReserva.PuedeFinalizar(Model, hoy))
+{
+    <form asp-controller="Reservas" asp-action="Finalizar" asp-route-id="@Model.IdReserva" method="post" class="d-inline"
+          onsubmit="return confirm('¿Registrar la salida (finalizar) de la reserva #@Model.IdReserva?');">
+        <input type="hidden" name="volverADetalle" value="@volverADetalle.ToString().ToLower()" />
+        <button type="submit" class="btn btn-sm btn-outline-success" title="Confirmada → Finalizada">Finalizar</button>
+    </form>
+}
+@if (EstadoReserva.PuedeCancelar(Model))
+{
+    <form asp-controller="Reservas" asp-action="Cancelar" asp-route-id="@Model.IdReserva" method="post" class="d-inline"
+          onsubmit="return confirm('¿Cancelar la reserva #@Model.IdReserva? Esta acción no se puede deshacer.');">
+        <input type="hidden" name="volverADetalle" value="@volverADetalle.ToString().ToLower()" />
+        <button type="submit" class="btn btn-sm btn-outline-danger">Cancelar</button>
+    </form>
+}
